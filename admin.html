@@ -82,7 +82,7 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="products.js?v=3"></script>
+<script src="products.js?v=4"></script>
 <script>
 let store = JSON.parse(JSON.stringify(getStore()));   // 편집용 복제본
 const BADGE_OPTS = [["best","BEST"],["gold","프리미엄"],["new","NEW"]];
@@ -248,6 +248,7 @@ function renderNotices(){
       <input data-p="notices.${i}.tt" value="${esc(n.tt)}" placeholder="제목">
       <input data-p="notices.${i}.dt" value="${esc(n.dt)}" placeholder="2026.07.15" style="max-width:120px">
       <button class="mini del" onclick="delNotice(${i})">삭제</button>
+      <textarea data-p="notices.${i}.body" placeholder="공지 본문 — 방문자가 제목을 누르면 이 내용이 펼쳐집니다" style="width:100%;margin-top:8px;min-height:64px">${esc(n.body||"")}</textarea>
     </div>`).join("");
 }
 
@@ -283,7 +284,7 @@ function addSig(){ store.signature=store.signature||[]; store.signature.push({sl
 function delSig(i){ store.signature.splice(i,1); renderSig(); }
 function addCat(){ store.categories.push({key:"cat"+Date.now(),label:"새 분류"}); render(); }
 function delCat(i){ store.categories.splice(i,1); render(); }
-function addNotice(){ store.notices.unshift({cat:"공지",ev:false,tt:"새 공지",dt:"2026.07.15"}); renderNotices(); }
+function addNotice(){ store.notices.unshift({cat:"공지",ev:false,tt:"새 공지",dt:"2026.07.15",body:""}); renderNotices(); }
 function delNotice(i){ store.notices.splice(i,1); renderNotices(); }
 function addReview(){ store.reviews.push({star:5,txt:"",who:"",prod:""}); renderReviews(); }
 function delReview(i){ store.reviews.splice(i,1); renderReviews(); }

@@ -172,8 +172,12 @@
 
   /* 공지 */
   .notice-list{max-width:820px;margin:0 auto;border-top:2px solid var(--blue-d)}
-  .notice-list a{display:flex;align-items:center;gap:14px;padding:18px 6px;border-bottom:1px solid var(--line)}
-  .notice-list a:hover{background:#fff}
+  .notice-list .notice-item{border-bottom:1px solid var(--line)}
+  .notice-head{width:100%;display:flex;align-items:center;gap:14px;padding:18px 6px;background:none;border:0;cursor:pointer;text-align:left;font:inherit;color:inherit}
+  .notice-head:hover{background:#fff}
+  .notice-head .arw{color:var(--ink-soft);font-size:12px;transition:transform .2s}
+  .notice-body{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;padding:0 6px;color:var(--ink-soft);line-height:1.75;font-size:14.5px}
+  .notice-body.open{max-height:600px;padding:2px 6px 20px}
   .notice-list .cat{font-size:12px;font-weight:800;color:#fff;background:var(--blue);padding:3px 10px;border-radius:20px;white-space:nowrap}
   .notice-list .cat.ev{background:var(--red)}
   .notice-list .tt{font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -449,7 +453,7 @@
   </div>
 </div>
 
-<script src="products.js?v=3"></script>
+<script src="products.js?v=4"></script>
 <script>
 /* ===== 데이터: products.js (관리자모드 admin.html 에서 편집) ===== */
 const STORE = getStore();
@@ -522,9 +526,15 @@ document.getElementById("revGrid").innerHTML=REVIEWS.map(r=>`
 
 /* 공지 (products.js / 관리자모드) */
 const NOTICES=STORE.notices||[];
-document.getElementById("noticeList").innerHTML=NOTICES.map(n=>`
-  <a href="#"><span class="cat ${n.ev?'ev':''}">${n.cat}</span>
-   <span class="tt">${n.tt}</span><span class="dt">${n.dt}</span></a>`).join("");
+document.getElementById("noticeList").innerHTML=NOTICES.map((n,i)=>`
+  <div class="notice-item">
+    <button type="button" class="notice-head" onclick="toggleNotice(${i})" aria-expanded="false">
+      <span class="cat ${n.ev?'ev':''}">${n.cat}</span>
+      <span class="tt">${n.tt}</span><span class="dt">${n.dt}</span><span class="arw">▾</span>
+    </button>
+    <div class="notice-body" id="nb${i}">${(n.body||"자세한 내용은 고객센터(055-867-3362)로 문의해 주세요.").replace(/\n/g,"<br>")}</div>
+  </div>`).join("");
+window.toggleNotice=function(i){const b=document.getElementById("nb"+i);const open=b.classList.toggle("open");const btn=b.previousElementSibling;btn.setAttribute("aria-expanded",open?"true":"false");const a=btn.querySelector(".arw");if(a)a.style.transform=open?"rotate(180deg)":"";};
 
 /* 슬라이더 */
 const slides=document.getElementById("slides");
