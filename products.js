@@ -8,7 +8,7 @@ window.STORE_DEFAULT = {
   /* 기본 정보 */
   info: {
     brand: "청해신푸드",
-    topbar: "🌊 청정 남해의 자연을 담은 청해신푸드 · 보물섬명품 쌈장 무료배송",
+    topbar: "🌊 청정 보물섬 남해에서 차린 · 청해신푸드 · 보물섬명품 쌈장 무료배송",
     cs: "055-000-0000",
     csHours: "평일 09:00–18:00 · 점심 12:00–13:00 (주말·공휴일 휴무)",
     coupon: "WELCOME3000",
@@ -37,7 +37,7 @@ window.STORE_DEFAULT = {
       desc:"된장에 정성을 더한 남해 대표 밥도둑" },
 
     { slug:"aekjeot", name:"[참존식품] 남해어부림 멸치액젓", cat:"jang", catLabel:"액젓",
-      price:7000, priceSuffix:"~", priceNote:"600ml 7,000원 · 2.2kg 18,000원 (옵션) · 배송비 5,000원", badges:["new"], free:false,
+      price:9000, priceSuffix:"~", priceNote:"600ml 9,000원 · 2.2kg 18,000원 (옵션) · 배송비 5,000원", badges:["new"], free:false,
       img:"aekjeot.jpg", img2:"aekjeot_2.jpg", uid:3522037, detailDir:"aekjeot", detailN:7, detailNote:"",
       desc:"남해 멸치로 담근 감칠맛 가득 액젓" },
 
