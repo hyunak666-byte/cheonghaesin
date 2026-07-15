@@ -1,0 +1,49 @@
+{
+ "ssamjang": [
+  "detail/ssamjang/01.jpg",
+  "detail/ssamjang/02.jpg",
+  "detail/ssamjang/03.jpg",
+  "detail/ssamjang/04.jpg"
+ ],
+ "milkit": [
+  "detail/milkit/01.jpg",
+  "detail/milkit/02.jpg",
+  "detail/milkit/03.jpg",
+  "detail/milkit/04.jpg"
+ ],
+ "bomuljuk_15": [
+  "detail/bomuljuk_15/01.jpg",
+  "detail/bomuljuk_15/02.jpg",
+  "detail/bomuljuk_15/03.jpg",
+  "detail/bomuljuk_15/04.jpg",
+  "detail/bomuljuk_15/05.jpg",
+  "detail/bomuljuk_15/06.jpg",
+  "detail/bomuljuk_15/07.jpg",
+  "detail/bomuljuk_15/08.jpg",
+  "detail/bomuljuk_15/09.jpg"
+ ],
+ "bomul_bbae_set": [
+  "detail/bomul_bbae_set/01.jpg",
+  "detail/bomul_bbae_set/02.jpg",
+  "detail/bomul_bbae_set/03.jpg",
+  "detail/bomul_bbae_set/04.jpg",
+  "detail/bomul_bbae_set/05.jpg",
+  "detail/bomul_bbae_set/06.jpg",
+  "detail/bomul_bbae_set/07.jpg",
+  "detail/bomul_bbae_set/08.jpg",
+  "detail/bomul_bbae_set/09.jpg",
+  "detail/bomul_bbae_set/10.jpg",
+  "detail/bomul_bbae_set/11.jpg"
+ ],
+ "bbaettaegi_5": [
+  "detail/bbaettaegi_5/01.jpg",
+  "detail/bbaettaegi_5/02.jpg",
+  "detail/bbaettaegi_5/03.jpg",
+  "detail/bbaettaegi_5/04.jpg",
+  "detail/bbaettaegi_5/05.jpg",
+  "detail/bbaettaegi_5/06.jpg",
+  "detail/bbaettaegi_5/07.jpg",
+  "detail/bbaettaegi_5/08.jpg"
+ ],
+ "bbaettaegi_15": []
+}

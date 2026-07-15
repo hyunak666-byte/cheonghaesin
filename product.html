@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>청해신푸드 · 상품 상세</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1C6699;--blue-d:#0E466E;--blue-dd:#0a3352;--blue-l:#eaf2f8;
+    --gold:#C79A3E;--gold-d:#a97f28;--green:#4E9A3D;--red:#C4392E;
+    --cream:#f7f3ea;--cream2:#fbf8f1;--ink:#1e2c36;--ink-soft:#5d6b74;
+    --line:#e6ddcd;--card:#fff;--shadow:0 12px 34px rgba(14,70,110,.12);--shadow-s:0 4px 16px rgba(14,70,110,.09);
+  }
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{font-family:"Noto Sans KR","Malgun Gothic",system-ui,sans-serif;color:var(--ink);background:var(--cream);-webkit-font-smoothing:antialiased;line-height:1.55}
+  a{color:inherit;text-decoration:none}img{max-width:100%;display:block}button{font-family:inherit;cursor:pointer}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  .serif{font-family:"Noto Serif KR",serif}
+
+  .topbar{background:var(--blue-d);color:#dceaf3;font-size:13px}
+  .topbar .wrap{display:flex;align-items:center;justify-content:center;height:38px}
+  .topbar b{color:var(--gold)}
+  header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .head{display:flex;align-items:center;gap:22px;height:74px}
+  .logo{display:flex;align-items:center;gap:10px}.logo img{height:48px}.logo .logo-full{height:52px;width:auto}
+  .logo .name{font-size:22px;font-weight:900;color:var(--blue-d)}
+  .logo .name small{display:block;font-size:10px;font-weight:500;color:var(--ink-soft);letter-spacing:2px}
+  nav.main{display:flex;gap:24px;margin-left:12px;font-weight:700;font-size:15px}
+  nav.main a:hover{color:var(--blue)}
+  .head .tools{margin-left:auto;display:flex;gap:12px}
+  .icon-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center;font-size:18px;position:relative}
+  .cartcount{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:11px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
+
+  .crumb{max-width:1180px;margin:0 auto;padding:20px;color:var(--ink-soft);font-size:13.5px}
+  .crumb a:hover{color:var(--blue)}
+
+  /* 상품 상단 */
+  .ptop{display:grid;grid-template-columns:1fr 1fr;gap:44px;padding:8px 0 60px}
+  .gallery .main{aspect-ratio:1/1;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#fff;box-shadow:var(--shadow-s)}
+  .gallery .main img{width:100%;height:100%;object-fit:cover}
+  .gallery .thumbs{display:flex;gap:10px;margin-top:12px}
+  .gallery .thumbs button{width:76px;height:76px;border-radius:12px;overflow:hidden;border:2px solid var(--line);background:#fff;padding:0}
+  .gallery .thumbs button.on{border-color:var(--blue)}
+  .gallery .thumbs img{width:100%;height:100%;object-fit:cover}
+
+  .buy .cat{color:var(--blue);font-weight:700;font-size:14px}
+  .buy h1{font-size:clamp(22px,2.6vw,30px);font-weight:900;margin:8px 0 18px;line-height:1.35}
+  .buy .badges{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+  .badge{font-size:12px;font-weight:800;padding:4px 10px;border-radius:6px;color:#fff}
+  .b-best{background:var(--red)}.b-gold{background:var(--gold-d)}.b-new{background:var(--green)}.b-free{background:var(--blue)}
+  .buy .price{font-size:34px;font-weight:900;color:var(--ink);margin:6px 0 20px}
+  .spec{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;margin-bottom:22px;font-size:14.5px}
+  .spec .row{display:flex;gap:12px;padding:5px 0}
+  .spec .k{width:88px;color:var(--ink-soft);flex-shrink:0}
+  .spec .v{font-weight:600}
+  .spec .v.free{color:var(--blue);font-weight:800}
+  .qty{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .qty .box{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .qty .box button{width:40px;height:44px;border:none;background:#fff;font-size:18px;color:var(--ink)}
+  .qty .box input{width:52px;height:44px;border:none;text-align:center;font-size:16px;font-weight:700;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+  .qty .total{margin-left:auto;text-align:right}
+  .qty .total b{font-size:22px;color:var(--blue-d)}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .btn{padding:16px;border-radius:12px;font-weight:800;font-size:16px;text-align:center;border:1px solid var(--blue-d)}
+  .btn.cart{background:#fff;color:var(--blue-d)}
+  .btn.cart:hover{background:var(--blue-l)}
+  .btn.buy{background:var(--blue-d);color:#fff}
+  .btn.buy:hover{background:var(--blue-dd)}
+  .ext{display:flex;gap:10px}
+  .ext a{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border-radius:12px;font-weight:800;font-size:15px;color:#fff}
+  .ext .namhae{background:var(--blue)}
+  .ext a:hover{filter:brightness(1.08)}
+  .demo-note{margin-top:14px;font-size:12.5px;color:var(--ink-soft);background:var(--cream2);border:1px dashed var(--line);border-radius:10px;padding:10px 12px}
+
+  /* 상세정보 */
+  .detail-wrap{background:#fff;border-top:1px solid var(--line)}
+  .detail-head{text-align:center;padding:46px 20px 10px}
+  .detail-head .tag{color:var(--blue);font-weight:800;letter-spacing:3px;font-size:13px}
+  .detail-head h2{font-size:26px;font-weight:900;margin:8px 0 0}
+  .detail-head .divider{width:44px;height:3px;background:var(--gold);border-radius:2px;margin:14px auto 0}
+  .detail-imgs{max-width:820px;margin:0 auto;padding:24px 0 60px}
+  .detail-imgs img{width:100%;height:auto;display:block}
+  .fallback-flag{max-width:820px;margin:20px auto 0;background:#fff6e6;border:1px solid var(--gold);color:var(--gold-d);border-radius:10px;padding:12px 16px;font-size:13.5px;font-weight:600}
+
+  footer{background:var(--blue-dd);color:#b9cddb;padding:44px 0 34px;font-size:13.5px;margin-top:0}
+  footer .cols{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;margin-bottom:24px}
+  footer h5{color:#fff;font-size:15px;margin:0 0 10px}
+  footer a{display:block;padding:3px 0;color:#b9cddb}footer a:hover{color:var(--gold)}
+  footer .biz{border-top:1px solid rgba(255,255,255,.14);padding-top:18px;font-size:12px;line-height:1.8;color:#8ba7bb}
+  footer .biz .note{color:var(--gold)}
+
+  .demo-flag{position:fixed;left:14px;bottom:14px;z-index:60;background:rgba(14,70,110,.94);color:#eaf2f8;font-size:12px;padding:9px 14px;border-radius:30px;box-shadow:var(--shadow);max-width:330px}
+  .demo-flag b{color:var(--gold)}
+
+  @media(max-width:860px){
+    .ptop{grid-template-columns:1fr;gap:26px}
+    nav.main{display:none}
+  }
+  @media(max-width:560px){
+    .actions{grid-template-columns:1fr}
+    .buy .price{font-size:28px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap"><span>🌊 <b>청정 남해</b>의 자연을 담은 청해신푸드</span></div></div>
+
+<header>
+  <div class="wrap head">
+    <a class="logo" href="index.html">
+      <img src="images/logo_full.png" alt="청해신푸드" class="logo-full">
+    </a>
+    <nav class="main">
+      <a href="index.html#all">전체상품</a>
+      <a href="index.html?tab=jang#all">쌈장</a>
+      <a href="index.html?tab=juk#all">보물죽·빼때기죽</a>
+      <a href="index.html#sellers">판매처</a>
+    </nav>
+    <div class="tools">
+      <button class="icon-btn" title="장바구니">🛒<span class="cartcount" id="cartCount">0</span></button>
+    </div>
+  </div>
+</header>
+
+<div class="crumb" id="crumb"><a href="index.html">홈</a> › <span id="crumbCat"></span> › <span id="crumbName"></span></div>
+
+<div class="wrap">
+  <div class="ptop">
+    <div class="gallery">
+      <div class="main"><img id="mainImg" src="" alt=""></div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+    <div class="buy">
+      <div class="cat" id="pCat"></div>
+      <h1 id="pName"></h1>
+      <div class="badges" id="pBadges"></div>
+      <div class="price" id="pPrice"></div>
+      <div class="spec">
+        <div class="row"><div class="k">브랜드</div><div class="v">청해신푸드</div></div>
+        <div class="row"><div class="k">원산지</div><div class="v">국내산</div></div>
+        <div class="row"><div class="k">배송</div><div class="v" id="pShip"></div></div>
+        <div class="row"><div class="k">판매처</div><div class="v">남해몰</div></div>
+      </div>
+      <div class="qty">
+        <div class="box">
+          <button onclick="chQty(-1)">−</button>
+          <input id="qty" value="1" inputmode="numeric" onchange="calc()">
+          <button onclick="chQty(1)">+</button>
+        </div>
+        <div class="total">총 상품금액 <b id="total"></b></div>
+      </div>
+      <div class="actions">
+        <button class="btn cart" onclick="addCart()">장바구니 담기</button>
+        <a class="btn buy" id="buyNow" href="#" target="_blank" rel="noopener">바로 구매하기</a>
+      </div>
+      <div class="ext">
+        <a class="namhae" id="lnNamhae" href="#" target="_blank" rel="noopener">🏝️ 남해몰에서 구매</a>
+      </div>
+      <div class="demo-note">※ 디자인 시안입니다. ‘바로 구매하기’는 실제 판매처(남해몰)로 연결됩니다. 자체 결제는 아직 연동되어 있지 않습니다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 상세정보 (남해몰 원본 이미지 그대로) -->
+<div class="detail-wrap">
+  <div class="detail-head">
+    <span class="tag">DETAIL</span>
+    <h2>상세정보</h2>
+    <div class="divider"></div>
+  </div>
+  <div id="fallbackFlag"></div>
+  <div class="detail-imgs" id="detailImgs"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><h5>청해신푸드</h5><div style="color:#9db8ca">청정 남해의 자연을 담은 브랜드<br>고객센터 055-000-0000 (평일 09–18시)</div></div>
+      <div><h5>바로가기</h5>
+        <a href="index.html#all">전체상품</a>
+        <a href="index.html#sellers">판매처</a>
+        <a href="index.html#notice">공지사항</a>
+      </div>
+    </div>
+    <div class="biz"><span class="note">※ 사업자 정보는 예시입니다 — 실제 정보로 교체하세요.</span><br>
+      상호 청해신푸드 · 경상남도 남해군 · © 2026 CHUNGHAESIN FOOD. 디자인 시안(결제 미연동).</div>
+  </div>
+</footer>
+
+<div class="demo-flag">🎨 <b>디자인 시안</b> · 상세이미지·상품정보는 남해몰 원본입니다.</div>
+
+<script src="products.js"></script>
+<script>
+/* ===== 데이터: products.js (관리자모드 admin.html 에서 편집) ===== */
+const STORE = getStore();
+const BYSLUG = {}; STORE.products.forEach(p=>{BYSLUG[p.slug]=p;});
+const BADGE_MAP={best:["b-best","BEST"],gold:["b-gold","프리미엄"],new:["b-new","NEW"],free:["b-free","무료배송"]};
+const won=n=>Number(n).toLocaleString("ko-KR")+"원";
+const pad=i=>String(i).padStart(2,"0");
+
+function getId(){
+  const p=new URLSearchParams(location.search).get("id");
+  return BYSLUG[p]?p:STORE.products[0].slug;
+}
+const id=getId(), P=BYSLUG[id];
+
+document.title=`청해신푸드 · ${P.name}`;
+document.getElementById("pCat").textContent=P.catLabel||P.cat;
+document.getElementById("crumbCat").textContent=P.catLabel||P.cat;
+document.getElementById("pName").textContent=P.name;
+document.getElementById("crumbName").textContent=P.name.replace(/^\[[^\]]+\]\s*/,"");
+document.getElementById("pPrice").textContent=won(P.price)+(P.priceSuffix||"");
+if(P.priceNote){document.getElementById("pPrice").insertAdjacentHTML("afterend",`<div style="color:var(--ink-soft);font-size:14px;font-weight:500;margin:-12px 0 18px">${P.priceNote}</div>`);}
+document.getElementById("pShip").innerHTML=P.free?'<span class="free">무료배송</span>':'택배배송';
+document.getElementById("pShip").className="v"+(P.free?" free":"");
+document.getElementById("pBadges").innerHTML=(P.badges||[]).map(b=>`<span class="badge ${BADGE_MAP[b][0]}">${BADGE_MAP[b][1]}</span>`).join("");
+const buyUrl=`https://www.enamhae.co.kr/shop/shopdetail.html?branduid=${P.uid}`;
+document.getElementById("buyNow").href=buyUrl;
+document.getElementById("lnNamhae").href=buyUrl;
+
+/* 갤러리 */
+const mainImg=document.getElementById("mainImg");
+const gimgs=[P.img,P.img2].filter(Boolean);
+mainImg.src="images/"+gimgs[0]; mainImg.alt=P.name;
+document.getElementById("thumbs").innerHTML=gimgs.map((g,i)=>
+  `<button class="${i===0?'on':''}" onclick="pick(${i})"><img src="images/${g}" alt=""></button>`).join("");
+window.pick=i=>{mainImg.src="images/"+gimgs[i];document.querySelectorAll(".thumbs button").forEach((b,j)=>b.classList.toggle("on",i===j));};
+
+/* 수량/합계 */
+function chQty(d){const q=document.getElementById("qty");q.value=Math.max(1,(parseInt(q.value)||1)+d);calc();}
+function calc(){const q=Math.max(1,parseInt(document.getElementById("qty").value)||1);document.getElementById("qty").value=q;document.getElementById("total").textContent=won(P.price*q);}
+calc();
+
+/* 장바구니 (데모) */
+let cart=0;
+function addCart(){const q=Math.max(1,parseInt(document.getElementById("qty").value)||1);cart+=q;document.getElementById("cartCount").textContent=cart;alert(`장바구니에 담았습니다 (${q}개)\n※ 디자인 시안 — 실제 결제는 남해몰에서 진행됩니다.`);}
+
+/* 상세이미지 스택 */
+const _dn=P.detailN||0, _dd=P.detailDir||P.slug;
+const imgs=[];for(let i=1;i<=_dn;i++)imgs.push(`images/detail/${_dd}/${pad(i)}.jpg`);
+document.getElementById("detailImgs").innerHTML=imgs.map(u=>`<img src="${u}" alt="상세이미지" loading="lazy">`).join("");
+if(P.detailNote)document.getElementById("fallbackFlag").innerHTML=`<div class="fallback-flag">${P.detailNote}</div>`;
+</script>
+</body>
+</html>

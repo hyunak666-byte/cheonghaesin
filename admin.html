@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>청해신푸드 · 관리자 모드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--blue:#1C6699;--blue-d:#0E466E;--blue-dd:#0a3352;--blue-l:#eaf2f8;--gold:#C79A3E;--red:#C4392E;--green:#2f8a4a;
+    --cream:#f4f6f8;--ink:#1e2c36;--ink-soft:#5d6b74;--line:#dfe6ec;--card:#fff;--shadow:0 6px 20px rgba(14,70,110,.1)}
+  *{box-sizing:border-box}body{margin:0;font-family:"Noto Sans KR","Malgun Gothic",sans-serif;background:var(--cream);color:var(--ink);font-size:14px;line-height:1.5}
+  button{font-family:inherit;cursor:pointer}
+  input,select,textarea{font-family:inherit;font-size:13.5px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;width:100%}
+  textarea{resize:vertical;min-height:56px}
+  a{color:var(--blue)}
+  /* 잠금 */
+  #lock{position:fixed;inset:0;background:linear-gradient(140deg,var(--blue-dd),var(--blue));display:grid;place-items:center;z-index:100}
+  #lock .box{background:#fff;border-radius:18px;padding:38px 34px;width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  #lock h1{margin:0 0 4px;font-size:22px;color:var(--blue-d)}
+  #lock p{margin:0 0 20px;color:var(--ink-soft);font-size:13px}
+  #lock input{text-align:center;margin-bottom:12px}
+  #lock button{width:100%;background:var(--blue-d);color:#fff;border:none;padding:12px;border-radius:10px;font-weight:800}
+  #lock .hint{margin-top:14px;font-size:11.5px;color:#9aa}
+  /* 상단바 */
+  .top{position:sticky;top:0;z-index:50;background:var(--blue-dd);color:#fff;display:flex;align-items:center;gap:12px;padding:12px 18px;flex-wrap:wrap}
+  .top .logo{font-weight:900;font-size:17px;margin-right:auto}
+  .top .logo small{font-weight:500;opacity:.7;font-size:11px;letter-spacing:2px;display:block}
+  .top button{border:none;border-radius:9px;padding:10px 15px;font-weight:800;font-size:13px}
+  .btn-save{background:var(--gold);color:var(--blue-dd)}
+  .btn-exp{background:#fff;color:var(--blue-d)}
+  .btn-prev{background:rgba(255,255,255,.16);color:#fff}
+  .btn-reset{background:transparent;color:#ffd0cb;border:1px solid rgba(255,120,100,.5)!important}
+  .wrap{max-width:1000px;margin:0 auto;padding:22px 18px 80px}
+  .note{background:#fff7e6;border:1px solid var(--gold);border-radius:12px;padding:14px 16px;font-size:13px;color:#7a5c1a;margin-bottom:22px}
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin-bottom:20px;box-shadow:var(--shadow)}
+  .sec>h2{margin:0 0 4px;font-size:18px;color:var(--blue-d);display:flex;align-items:center;gap:8px}
+  .sec>.desc{color:var(--ink-soft);font-size:12.5px;margin:0 0 16px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .fld{margin-bottom:10px}
+  .fld label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:4px}
+  .prod{border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px;background:#fbfdff}
+  .prod .phead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .prod .phead .pn{font-weight:800;flex:1}
+  .prod .phead img{width:40px;height:40px;border-radius:8px;object-fit:cover;border:1px solid var(--line);background:#eef2f5}
+  .mini{padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:#fff;font-weight:700;font-size:12px}
+  .mini.del{color:var(--red);border-color:#f0c4bf}
+  .badges-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:6px 0}
+  .badges-row label{display:inline-flex;align-items:center;gap:5px;font-weight:600;font-size:13px}
+  .badges-row input{width:auto}
+  .addbtn{background:var(--blue-l);color:var(--blue-d);border:1px dashed var(--blue);border-radius:10px;padding:11px;font-weight:800;width:100%}
+  .row-item{display:grid;grid-template-columns:auto 1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+  .row-item.rev{grid-template-columns:70px 1fr 100px 130px auto}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--blue-dd);color:#fff;padding:13px 22px;border-radius:30px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;transition:.3s;z-index:80;pointer-events:none}
+  .toast.show{opacity:1}
+  @media(max-width:680px){.grid2,.grid3{grid-template-columns:1fr}.row-item,.row-item.rev{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- 잠금 화면 -->
+<div id="lock">
+  <div class="box">
+    <h1>🔒 관리자 모드</h1>
+    <p>청해신푸드 상품·콘텐츠 관리</p>
+    <input type="password" id="pw" placeholder="관리자 비밀번호" onkeydown="if(event.key==='Enter')unlock()">
+    <button onclick="unlock()">들어가기</button>
+    <div class="hint">기본 비밀번호: <b>admin1234</b> (기본정보에서 변경 가능)<br>※ 간단 잠금이며 실제 보안은 아닙니다</div>
+  </div>
+</div>
+
+<!-- 상단바 -->
+<div class="top" style="display:none" id="topbar">
+  <div class="logo">청해신푸드 관리자<small>ADMIN MODE</small></div>
+  <button class="btn-prev" onclick="openPreview()">🔎 사이트 미리보기</button>
+  <button class="btn-reset btn-save" onclick="doReset()" style="background:transparent;color:#ffd0cb;border:1px solid rgba(255,120,100,.5)">↩ 기본값</button>
+  <button class="btn-exp" onclick="doExport()">⬇ products.js 내보내기</button>
+  <button class="btn-save" onclick="doSave()">💾 저장(미리보기)</button>
+</div>
+
+<div class="wrap" id="app" style="display:none"></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="products.js"></script>
+<script>
+let store = JSON.parse(JSON.stringify(getStore()));   // 편집용 복제본
+const BADGE_OPTS = [["best","BEST"],["gold","프리미엄"],["new","NEW"]];
+
+/* ---------- 잠금 ---------- */
+function unlock(){
+  const pw = document.getElementById("pw").value;
+  const real = (store.info && store.info.adminPw) || "admin1234";
+  if(pw===real){
+    document.getElementById("lock").style.display="none";
+    document.getElementById("topbar").style.display="flex";
+    document.getElementById("app").style.display="block";
+    render();
+  } else { alert("비밀번호가 틀립니다."); }
+}
+
+/* ---------- 유틸 ---------- */
+function setPath(path,val){
+  const p=path.split("."); let o=store;
+  for(let i=0;i<p.length-1;i++) o=o[p[i]];
+  o[p[p.length-1]]=val;
+}
+function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200);}
+
+/* 입력 바인딩 (data-p 경로) */
+document.addEventListener("input",e=>{
+  const el=e.target; if(!el.dataset.p) return;
+  let v=el.value;
+  if(el.type==="number") v=el.value===""?"":Number(el.value);
+  if(el.type==="checkbox") v=el.checked;
+  setPath(el.dataset.p, v);
+});
+
+/* ---------- 렌더 ---------- */
+function render(){
+  const P=store.products, C=store.categories||[], I=store.info||{};
+  const catOpts=C.map(c=>`<option value="${c.key}">${esc(c.label)}</option>`).join("");
+  document.getElementById("app").innerHTML = `
+  <div class="note">✏️ <b>사용법</b> — 아래에서 고친 뒤 우측 상단 <b>💾 저장(미리보기)</b>을 누르면 이 브라우저의 사이트에 바로 반영됩니다.
+   실제 사이트(방문자 모두)에 영구 반영하려면 <b>⬇ products.js 내보내기</b>로 파일을 받아 <code>products.js</code>를 교체(또는 저에게 전달)하세요.</div>
+
+  <!-- 기본정보 -->
+  <div class="sec">
+    <h2>🏷️ 기본 정보</h2>
+    <div class="grid2">
+      <div class="fld"><label>브랜드명</label><input data-p="info.brand" value="${esc(I.brand)}"></div>
+      <div class="fld"><label>고객센터 전화</label><input data-p="info.cs" value="${esc(I.cs)}"></div>
+      <div class="fld"><label>운영시간</label><input data-p="info.csHours" value="${esc(I.csHours)}"></div>
+      <div class="fld"><label>쿠폰 코드</label><input data-p="info.coupon" value="${esc(I.coupon)}"></div>
+    </div>
+    <div class="fld"><label>상단 띠 문구</label><input data-p="info.topbar" value="${esc(I.topbar)}"></div>
+    <div class="fld"><label>사업자 정보(푸터) — 줄바꿈은 &lt;br&gt;</label><textarea data-p="info.biz">${esc(I.biz)}</textarea></div>
+    <div class="fld" style="max-width:260px"><label>관리자 비밀번호</label><input data-p="info.adminPw" value="${esc(I.adminPw||'admin1234')}"></div>
+  </div>
+
+  <!-- 상품 -->
+  <div class="sec">
+    <h2>📦 상품 관리 <span style="font-size:12px;color:var(--ink-soft);font-weight:500">(${P.length}개)</span></h2>
+    <p class="desc">가격은 숫자만 입력(예: 35000 → 35,000원 자동표시). 사진은 <code>images/</code> 폴더의 파일명, 상세이미지는 <code>images/detail/폴더명/</code> 의 장수.</p>
+    <div id="prodList"></div>
+    <button class="addbtn" onclick="addProduct()">＋ 상품 추가</button>
+  </div>
+
+  <!-- 대표상품 -->
+  <div class="sec">
+    <h2>⭐ 대표상품 (메인 상단 3종)</h2>
+    <div id="sigList"></div>
+  </div>
+
+  <!-- 카테고리 -->
+  <div class="sec">
+    <h2>🗂️ 카테고리 탭</h2>
+    <p class="desc">key=상품의 분류값(영문), label=화면에 보이는 이름. '전체'는 자동으로 붙습니다.</p>
+    <div id="catList"></div>
+    <button class="addbtn" onclick="addCat()">＋ 카테고리 추가</button>
+  </div>
+
+  <!-- 공지 -->
+  <div class="sec">
+    <h2>📢 공지사항</h2>
+    <div id="noticeList"></div>
+    <button class="addbtn" onclick="addNotice()">＋ 공지 추가</button>
+  </div>
+
+  <!-- 후기 -->
+  <div class="sec">
+    <h2>💬 고객 후기</h2>
+    <div id="reviewList"></div>
+    <button class="addbtn" onclick="addReview()">＋ 후기 추가</button>
+  </div>`;
+
+  renderProducts(catOpts); renderSig(); renderCats(); renderNotices(); renderReviews();
+}
+
+function renderProducts(catOpts){
+  document.getElementById("prodList").innerHTML = store.products.map((p,i)=>`
+    <div class="prod">
+      <div class="phead">
+        <img src="images/${esc(p.img)}" onerror="this.style.opacity=.3">
+        <span class="pn">${esc(p.name)||"(이름없음)"}</span>
+        <button class="mini" onclick="moveProduct(${i},-1)" title="위로">▲</button>
+        <button class="mini" onclick="moveProduct(${i},1)" title="아래로">▼</button>
+        <button class="mini del" onclick="delProduct(${i})">삭제</button>
+      </div>
+      <div class="grid2">
+        <div class="fld"><label>상품명</label><input data-p="products.${i}.name" value="${esc(p.name)}"></div>
+        <div class="fld"><label>카테고리</label><select data-p="products.${i}.cat">${catOpts.replace(`value="${p.cat}"`,`value="${p.cat}" selected`)}</select></div>
+      </div>
+      <div class="grid3">
+        <div class="fld"><label>가격(숫자)</label><input type="number" data-p="products.${i}.price" value="${p.price}"></div>
+        <div class="fld"><label>가격 접미사</label><input data-p="products.${i}.priceSuffix" value="${esc(p.priceSuffix)}" placeholder="예: ~"></div>
+        <div class="fld"><label>목록 표시 분류명</label><input data-p="products.${i}.catLabel" value="${esc(p.catLabel)}" placeholder="예: 액젓"></div>
+      </div>
+      <div class="fld"><label>가격 상세설명(옵션·배송비 등)</label><input data-p="products.${i}.priceNote" value="${esc(p.priceNote)}" placeholder="예: 600ml 7,000원 · 2.2kg 18,000원"></div>
+      <div class="fld"><label>짧은 소개(대표상품 카드용)</label><input data-p="products.${i}.desc" value="${esc(p.desc)}"></div>
+      <div class="badges-row">
+        <span style="font-weight:700;color:var(--ink-soft);font-size:12px">뱃지:</span>
+        ${BADGE_OPTS.map(([k,l])=>`<label><input type="checkbox" onchange="toggleBadge(${i},'${k}',this.checked)" ${(p.badges||[]).includes(k)?"checked":""}>${l}</label>`).join("")}
+        <label style="margin-left:10px"><input type="checkbox" onchange="setFree(${i},this.checked)" ${p.free?"checked":""}>무료배송</label>
+      </div>
+      <div class="grid3">
+        <div class="fld"><label>대표사진 파일</label><input data-p="products.${i}.img" value="${esc(p.img)}"></div>
+        <div class="fld"><label>추가사진 파일</label><input data-p="products.${i}.img2" value="${esc(p.img2)}"></div>
+        <div class="fld"><label>구매링크 번호(branduid)</label><input data-p="products.${i}.uid" value="${esc(p.uid)}"></div>
+      </div>
+      <div class="grid3">
+        <div class="fld"><label>상세이미지 폴더</label><input data-p="products.${i}.detailDir" value="${esc(p.detailDir)}"></div>
+        <div class="fld"><label>상세이미지 장수</label><input type="number" data-p="products.${i}.detailN" value="${p.detailN||0}"></div>
+        <div class="fld"><label>slug(주소용·영문)</label><input data-p="products.${i}.slug" value="${esc(p.slug)}"></div>
+      </div>
+      <div class="fld"><label>상세 하단 안내문구(선택)</label><input data-p="products.${i}.detailNote" value="${esc(p.detailNote)}"></div>
+    </div>`).join("");
+}
+
+function renderSig(){
+  const opts=store.products.map(p=>`<option value="${p.slug}">${esc(p.name)}</option>`).join("");
+  document.getElementById("sigList").innerHTML = (store.signature||[]).map((s,i)=>`
+    <div class="row-item">
+      <span style="font-weight:800;color:var(--blue)">${i+1}</span>
+      <select data-p="signature.${i}.slug">${opts.replace(`value="${s.slug}"`,`value="${s.slug}" selected`)}</select>
+      <input data-p="signature.${i}.cap" value="${esc(s.cap)}" placeholder="뱃지(예: BEST)">
+      <button class="mini del" onclick="delSig(${i})">삭제</button>
+    </div>`).join("") + `<button class="addbtn" onclick="addSig()">＋ 대표상품 추가</button>`;
+}
+
+function renderCats(){
+  document.getElementById("catList").innerHTML = (store.categories||[]).map((c,i)=>`
+    <div class="row-item">
+      <span style="font-weight:800">🗂️</span>
+      <input data-p="categories.${i}.key" value="${esc(c.key)}" placeholder="key(영문)">
+      <input data-p="categories.${i}.label" value="${esc(c.label)}" placeholder="표시이름">
+      <button class="mini del" onclick="delCat(${i})">삭제</button>
+    </div>`).join("");
+}
+
+function renderNotices(){
+  document.getElementById("noticeList").innerHTML = (store.notices||[]).map((n,i)=>`
+    <div class="row-item">
+      <select data-p="notices.${i}.cat" onchange="store.notices[${i}].ev=(this.value==='이벤트')">
+        <option ${n.cat==='공지'?'selected':''}>공지</option><option ${n.cat==='이벤트'?'selected':''}>이벤트</option>
+      </select>
+      <input data-p="notices.${i}.tt" value="${esc(n.tt)}" placeholder="제목">
+      <input data-p="notices.${i}.dt" value="${esc(n.dt)}" placeholder="2026.07.15" style="max-width:120px">
+      <button class="mini del" onclick="delNotice(${i})">삭제</button>
+    </div>`).join("");
+}
+
+function renderReviews(){
+  document.getElementById("reviewList").innerHTML = (store.reviews||[]).map((r,i)=>`
+    <div class="row-item rev">
+      <select data-p="reviews.${i}.star">${[5,4,3,2,1].map(s=>`<option value="${s}" ${r.star===s?'selected':''}>★${s}</option>`).join("")}</select>
+      <input data-p="reviews.${i}.txt" value="${esc(r.txt)}" placeholder="후기 내용">
+      <input data-p="reviews.${i}.who" value="${esc(r.who)}" placeholder="작성자">
+      <input data-p="reviews.${i}.prod" value="${esc(r.prod)}" placeholder="상품명">
+      <button class="mini del" onclick="delReview(${i})">삭제</button>
+    </div>`).join("");
+}
+
+/* ---------- 편집 액션 ---------- */
+function toggleBadge(i,k,on){
+  let b=store.products[i].badges||[];
+  b=b.filter(x=>x!==k); if(on)b.push(k);
+  store.products[i].badges=b;
+}
+function setFree(i,on){
+  store.products[i].free=on;
+  toggleBadge(i,"free",on);
+}
+function addProduct(){
+  const slug="new"+Date.now();
+  store.products.push({slug,name:"새 상품",cat:(store.categories[0]||{}).key||"jang",catLabel:"",price:0,priceSuffix:"",priceNote:"",badges:["new"],free:false,img:"",img2:"",uid:"",detailDir:"",detailN:0,detailNote:"",desc:""});
+  render();window.scrollTo(0,document.body.scrollHeight);
+}
+function delProduct(i){ if(confirm("이 상품을 삭제할까요?")){store.products.splice(i,1);render();} }
+function moveProduct(i,d){ const j=i+d; if(j<0||j>=store.products.length)return; const t=store.products[i];store.products[i]=store.products[j];store.products[j]=t;render(); }
+function addSig(){ store.signature=store.signature||[]; store.signature.push({slug:(store.products[0]||{}).slug||"",cap:""}); renderSig(); }
+function delSig(i){ store.signature.splice(i,1); renderSig(); }
+function addCat(){ store.categories.push({key:"cat"+Date.now(),label:"새 분류"}); render(); }
+function delCat(i){ store.categories.splice(i,1); render(); }
+function addNotice(){ store.notices.unshift({cat:"공지",ev:false,tt:"새 공지",dt:"2026.07.15"}); renderNotices(); }
+function delNotice(i){ store.notices.splice(i,1); renderNotices(); }
+function addReview(){ store.reviews.push({star:5,txt:"",who:"",prod:""}); renderReviews(); }
+function delReview(i){ store.reviews.splice(i,1); renderReviews(); }
+
+/* ---------- 저장/내보내기 ---------- */
+function doSave(){ saveStore(store); toast("💾 저장됐어요 — 사이트 새로고침하면 반영됩니다"); }
+function doReset(){ if(confirm("편집 내용을 버리고 기본값으로 되돌릴까요?")){ resetStore(); store=JSON.parse(JSON.stringify(window.STORE_DEFAULT)); render(); toast("기본값으로 초기화됨"); } }
+function openPreview(){ doSave(); window.open("index.html","_blank"); }
+
+const LOADER = `window.STORE_KEY = "cheonghaesin_store_v1";
+window.getStore = function () { try { var ov = JSON.parse(localStorage.getItem(window.STORE_KEY) || "null"); if (ov && ov.products) return ov; } catch (e) {} return window.STORE_DEFAULT; };
+window.saveStore = function (store) { localStorage.setItem(window.STORE_KEY, JSON.stringify(store)); };
+window.resetStore = function () { localStorage.removeItem(window.STORE_KEY); };`;
+
+function doExport(){
+  const body = "/* 청해신푸드 · 상품/콘텐츠 데이터 (관리자모드에서 생성) */\n"+
+    "window.STORE_DEFAULT = "+JSON.stringify(store,null,2)+";\n\n"+LOADER+"\n";
+  const blob=new Blob([body],{type:"text/javascript"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="products.js";a.click();
+  toast("⬇ products.js 내려받음 — 이 파일로 교체하면 영구 반영");
+}
+</script>
+</body>
+</html>
